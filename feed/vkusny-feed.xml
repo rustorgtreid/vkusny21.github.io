@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<yml_catalog date="2026-09-29 16:00">
+  <shop>
+    <name>Вкусный</name>
+    <company>Вкусный</company>
+    <url>https://vk.com/vkusniy21rus</url>
+    <currencies>
+      <currency id="RUB" rate="1"/>
+    </currencies>
+    <categories>
+      <category id="1">Полуфабрикаты и готовая еда</category>
+    </categories>
+    <offers>
+    <offer id="vkusny-001" available="true">
+      <name>Хинкали, 1 кг</name>
+      <description>Грузинская классика: свинина и говядина, укроп, тонкое тесто и наваристый бульон внутри. Ручная лепка, заморозка сразу после неё. Варить из морозилки 10–15 минут в кипящей воде.</description>
+      <price>479</price>
+      <currencyId>RUB</currencyId>
+      <categoryId>1</categoryId>
+      <picture>https://rustorgtreid.github.io/vkusny21.github.io/feed/img/hinkali.png</picture>
+      <weight>1</weight>
+    </offer>
+    <offer id="vkusny-002" available="true">
+      <name>Сырники из творога 1кг</name>
+      <description>Нежные сырники из натурального творога, без лишних добавок. Обжарить пару минут с каждой стороны — получится золотистая корочка. Подавать со сметаной, мёдом или вареньем.</description>
+      <price>469</price>
+      <currencyId>RUB</currencyId>
+      <categoryId>1</categoryId>
+      <picture>https://rustorgtreid.github.io/vkusny21.github.io/feed/img/syrniki.png</picture>
+      <weight>1</weight>
+    </offer>
+    <offer id="vkusny-003" available="true">
+      <name>Котлеты нежные, 1 кг</name>
+      <description>Мягкие котлеты из смешанного фарша свинины и курицы в хрустящей панировке из сухарей. Обжарить на сковороде около 15 минут. Подходят с пюре, гречкой или овощами.</description>
+      <price>495</price>
+      <currencyId>RUB</currencyId>
+      <categoryId>1</categoryId>
+      <picture>https://rustorgtreid.github.io/vkusny21.github.io/feed/img/kotlety-nezhnye.png</picture>
+      <weight>1</weight>
+    </offer>
+    <offer id="vkusny-004" available="true">
+      <name>Вареники с вишней, 1 кг</name>
+      <description>Сладкие вареники с сочной вишней. Ручная лепка, заморозка сразу после неё. Варить 5–7 минут в кипящей воде, подавать со сметаной или сахаром.</description>
+      <price>468</price>
+      <currencyId>RUB</currencyId>
+      <categoryId>1</categoryId>
+      <picture>https://rustorgtreid.github.io/vkusny21.github.io/feed/img/vareniki-vishnya.jpg</picture>
+      <weight>1</weight>
+    </offer>
+    <offer id="vkusny-005" available="true">
+      <name>Филе в панировке, 1 кг</name>
+      <description>Куриное филе в золотистой хрустящей панировке. Уже готово: достаточно разогреть пару минут в духовке или на сковороде.</description>
+      <price>585</price>
+      <currencyId>RUB</currencyId>
+      <categoryId>1</categoryId>
+      <picture>https://rustorgtreid.github.io/vkusny21.github.io/feed/img/file-grudki.jpg</picture>
+      <weight>1</weight>
+    </offer>
+    <offer id="vkusny-006" available="true">
+      <name>Блины с мясом, 1 кг</name>
+      <description>Тонкие блины с сочной начинкой из свинины. Готовые: разогреть пару минут на сковороде или в микроволновке.</description>
+      <price>518</price>
+      <currencyId>RUB</currencyId>
+      <categoryId>1</categoryId>
+      <picture>https://rustorgtreid.github.io/vkusny21.github.io/feed/img/bliny-s-myasom.jpg</picture>
+      <weight>1</weight>
+    </offer>
+    <offer id="vkusny-007" available="true">
+      <name>Блины ветчина-сыр, 1 кг</name>
+      <description>Тонкие блины с начинкой из ветчины и плавленого сыра. Готовые: разогреть пару минут на сковороде или в микроволновке — сыр станет тягучим.</description>
+      <price>498</price>
+      <currencyId>RUB</currencyId>
+      <categoryId>1</categoryId>
+      <picture>https://rustorgtreid.github.io/vkusny21.github.io/feed/img/bliny-vetchina-syr.jpg</picture>
+      <weight>1</weight>
+    </offer>
+    </offers>
+  </shop>
+</yml_catalog>
