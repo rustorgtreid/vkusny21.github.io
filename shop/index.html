@@ -14,7 +14,7 @@
 }
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
-body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;padding-bottom:88px}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;padding-bottom:104px}
 header{background:var(--green);color:#FBF3E4;padding:18px 16px 14px}
 header h1{margin:0;font-size:22px;letter-spacing:.2px}
 header p{margin:4px 0 0;font-size:14px;opacity:.9}
@@ -42,11 +42,16 @@ header p{margin:4px 0 0;font-size:14px;opacity:.9}
 .step{display:flex;align-items:center;justify-content:space-between;gap:6px}
 .step button{width:42px;height:42px;border-radius:10px;border:1px solid var(--line);background:var(--soft);font-size:22px;cursor:pointer;color:var(--ink)}
 .step span{font-weight:600;min-width:64px;text-align:center}
-.bar{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-top:1px solid var(--line);padding:10px 16px calc(10px + env(safe-area-inset-bottom));display:flex;align-items:center;justify-content:space-between;gap:12px;z-index:5}
-.bar b{font-size:18px}
+/* Нижняя панель: фон на всю ширину, а содержимое — в той же колонке, что и каталог (до 760 px), чтобы на
+   широком экране сумма и кнопка не разъезжались по краям окна. */
+.bar{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-top:1px solid var(--line);box-shadow:0 -6px 18px rgba(0,0,0,.10);z-index:5}
+.barin{max-width:760px;margin:0 auto;padding:10px 16px calc(10px + env(safe-area-inset-bottom));display:flex;align-items:center;justify-content:space-between;gap:12px}
+.bar b{font-size:20px}
 .bar small{display:block;color:var(--muted);font-size:13px}
-.go{border:0;border-radius:12px;background:var(--green);color:#fff;padding:12px 18px;font-size:16px;font-weight:600;cursor:pointer}
-.go[disabled]{opacity:.45;cursor:not-allowed}
+.go{border:0;border-radius:14px;background:var(--accent);color:#fff;padding:14px 22px;font-size:17px;font-weight:700;cursor:pointer;white-space:nowrap}
+.go[disabled]{background:#b9b3a6;opacity:1;cursor:not-allowed;font-weight:600}
+.bar.pulse .go{animation:pulse .6s ease-out}
+@keyframes pulse{0%{transform:scale(1)}40%{transform:scale(1.07)}100%{transform:scale(1)}}
 .sheet{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;z-index:10}
 .sheet.open{display:block}
 .panel{position:absolute;left:0;right:0;bottom:0;max-height:92vh;overflow:auto;background:var(--bg);border-radius:18px 18px 0 0;padding:16px;max-width:760px;margin:0 auto}
@@ -87,10 +92,10 @@ header p{margin:4px 0 0;font-size:14px;opacity:.9}
   <div class="empty" id="empty" hidden>Ничего не найдено</div>
 </main>
 
-<div class="bar">
+<div class="bar" id="bar"><div class="barin">
   <div><b id="barTotal">0 ₽</b><small id="barInfo">Корзина пуста</small></div>
-  <button class="go" id="openCart" disabled>Корзина</button>
-</div>
+  <button class="go" id="openCart" disabled>Корзина пуста</button>
+</div></div>
 
 <div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-label="Корзина">
   <div class="panel">
@@ -188,6 +193,10 @@ header p{margin:4px 0 0;font-size:14px;opacity:.9}
     barTotal.textContent = rub(s);
     barInfo.textContent = n ? (n + " " + (n === 1 ? "позиция" : (n < 5 ? "позиции" : "позиций")) + (s < MIN_ORDER ? " · ещё " + rub(MIN_ORDER - s) + " до минимума" : "")) : "Корзина пуста";
     openBtn.disabled = !n;
+    // Подпись кнопки говорит, что делать дальше: пока пусто — «Корзина пуста», потом — «Оформить заказ →».
+    openBtn.textContent = n ? "Оформить заказ →" : "Корзина пуста";
+    var bar = document.getElementById("bar");           // короткая «пульсация» кнопки при изменении корзины
+    bar.classList.remove("pulse"); void bar.offsetWidth; if (n) bar.classList.add("pulse");
   }
 
   var sheet = document.getElementById("sheet"), linesEl = document.getElementById("lines"), sumEl = document.getElementById("sum"), warnEl = document.getElementById("warn");
