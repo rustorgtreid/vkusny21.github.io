@@ -259,6 +259,15 @@ header p{margin:4px 0 0;font-size:14px;opacity:.9}
   });
   window.addEventListener("load", function(){ var t = tgApp(); if (t) { t.ready(); t.expand(); } });
 
+  // ВКонтакте не всегда передаёт боту код из ссылки, поэтому кнопка «Заказать во ВКонтакте» заодно копирует
+  // текст заказа (в нём строка «Код заказа») — если корзина в чате не появилась сама, его достаточно вставить.
+  var hintEl = document.querySelector(".hint");
+  document.getElementById("oVk").addEventListener("click", function(){
+    if (this.classList.contains("off")) return;
+    try { navigator.clipboard.writeText(orderText()); } catch (e) {}
+    hintEl.textContent = "Заказ скопирован. Если в чате ВКонтакте корзина не появилась сама — вставьте скопированный текст в поле сообщения и отправьте.";
+  });
+
   window.__vitrina = {code: code, items: items};   // для проверки в консоли
   renderGrid(); renderBar();
 })();
