@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Вкусный — заказ полуфабрикатов</title>
 <meta name="description" content="Домашние полуфабрикаты ручной лепки с доставкой по Новочебоксарску и Новому городу">
+<!-- Скрипт Телеграма для режима «мини-приложение» (кнопка меню бота). Вне Телеграма ничего не делает. -->
+<script src="https://telegram.org/js/telegram-web-app.js" async></script>
 <style>
 :root{
   --bg:#FBF3E4; --card:#FFFFFF; --ink:#2B2B2B; --muted:#6B6B6B; --green:#2F4F3E; --accent:#C8553D;
@@ -234,6 +236,19 @@ header p{margin:4px 0 0;font-size:14px;opacity:.9}
     b.onclick = function(){ cat = b.dataset.cat; Array.prototype.forEach.call(document.querySelectorAll(".tab"), function(x){ x.setAttribute("aria-pressed", x === b ? "true" : "false"); }); renderGrid(); };
   });
   document.querySelector(".search").addEventListener("input", function(e){ q = e.target.value.trim().toLowerCase(); renderGrid(); });
+
+  // Внутри Телеграма (витрина открыта кнопкой меню бота) обычные ссылки работают ненадёжно:
+  // t.me-ссылку открываем через openTelegramLink (Телеграм сам откроет чат с ботом),
+  // ссылки ВК и Макса — через openLink (во внешнем браузере). В обычном браузере — как раньше.
+  function tgApp(){ var t = window.Telegram && window.Telegram.WebApp; return t && t.initData ? t : null; }
+  ["oVk", "oMax", "oTg"].forEach(function(id){
+    document.getElementById(id).addEventListener("click", function(e){
+      var t = tgApp(); if (!t || this.classList.contains("off")) return;
+      e.preventDefault();
+      if (id === "oTg") t.openTelegramLink(this.href); else t.openLink(this.href);
+    });
+  });
+  window.addEventListener("load", function(){ var t = tgApp(); if (t) { t.ready(); t.expand(); } });
 
   window.__vitrina = {code: code, items: items};   // для проверки в консоли
   renderGrid(); renderBar();
