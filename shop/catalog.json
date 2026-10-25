@@ -10,7 +10,8 @@
    "desc": "Ручная лепка, говядина и свинина. Тесто тонкое.",
    "photo": "img/1.jpg",
    "queue_name": "Пельмени домашние (свинина, говядина)",
-   "hidden": false
+   "hidden": false,
+   "handmade": true
   },
   {
    "id": 2,
@@ -21,7 +22,8 @@
    "desc": "диетичнее классических — из нежного мяса индейки",
    "photo": "img/2.jpg",
    "queue_name": "Пельмени из индейки",
-   "hidden": false
+   "hidden": false,
+   "handmade": true
   },
   {
    "id": 3,
@@ -43,7 +45,8 @@
    "desc": "сочные манты на пару из свинины, ручная лепка",
    "photo": "img/4.jpg",
    "queue_name": "Манты свиные",
-   "hidden": false
+   "hidden": false,
+   "handmade": true
   },
   {
    "id": 5,
@@ -54,7 +57,8 @@
    "desc": "грузинская классика — наваристый бульон внутри, с укропом",
    "photo": "img/5.jpg",
    "queue_name": "Хинкали (свинина, говядина, укроп)",
-   "hidden": false
+   "hidden": false,
+   "handmade": true
   },
   {
    "id": 6,
@@ -65,7 +69,8 @@
    "desc": "маленькие сочные шарики из смешанного фарша — для супа или гарнира",
    "photo": "img/6.jpg",
    "queue_name": "Фрикадельки нежные (свинина, курица)",
-   "hidden": false
+   "hidden": false,
+   "handmade": true
   },
   {
    "id": 7,
@@ -76,7 +81,8 @@
    "desc": "сочная мясная котлета без хлеба и лишнего фарша-наполнителя",
    "photo": "img/7.jpg",
    "queue_name": "Бифштекс домашний (свинина, говядина)",
-   "hidden": false
+   "hidden": false,
+   "handmade": true
   },
   {
    "id": 8,
@@ -87,7 +93,8 @@
    "desc": "мягкие котлеты из смешанного фарша в хрустящей панировке",
    "photo": "img/8.jpg",
    "queue_name": "Котлеты нежные (свинина, курица, панир, сухари)",
-   "hidden": false
+   "hidden": false,
+   "handmade": true
   },
   {
    "id": 9,
@@ -98,7 +105,8 @@
    "desc": "котлеты из курицы и индейки в форме небольших рифлёных «печений»",
    "photo": "img/9.jpg",
    "queue_name": "Котлеты детские (курица, индейка)",
-   "hidden": false
+   "hidden": false,
+   "handmade": true
   },
   {
    "id": 10,
@@ -109,7 +117,8 @@
    "desc": "сладкие, с сочной вишней — идеальны с сахаром и сметаной",
    "photo": "img/10.jpg",
    "queue_name": "Вареники вишня",
-   "hidden": false
+   "hidden": false,
+   "handmade": true
   },
   {
    "id": 11,
@@ -120,7 +129,8 @@
    "desc": "простая домашняя классика: картошка с обжаренным луком",
    "photo": "img/11.jpg",
    "queue_name": "Вареники картофель лук",
-   "hidden": false
+   "hidden": false,
+   "handmade": true
   },
   {
    "id": 12,
@@ -142,7 +152,8 @@
    "desc": "солёный вариант творожных вареников, с зелёным луком",
    "photo": "img/13.jpg",
    "queue_name": "Вареники творог зелёный лук",
-   "hidden": false
+   "hidden": false,
+   "handmade": true
   },
   {
    "id": 14,
@@ -153,7 +164,8 @@
    "desc": "сладкая творожная начинка — отлично с вареньем",
    "photo": "img/14.jpg",
    "queue_name": "Вареники творог сладкий",
-   "hidden": false
+   "hidden": false,
+   "handmade": true
   },
   {
    "id": 15,
@@ -164,7 +176,8 @@
    "desc": "простая и любимая начинка на скорую руку",
    "photo": "img/15.jpg",
    "queue_name": "Вареники яйцо зелёный лук",
-   "hidden": false
+   "hidden": false,
+   "handmade": true
   },
   {
    "id": 16,
@@ -175,18 +188,20 @@
    "desc": "нежные, из натурального творога, без лишних добавок",
    "photo": "img/16.jpg",
    "queue_name": "Сырники из натур. творога",
-   "hidden": false
+   "hidden": false,
+   "handmade": true
   },
   {
    "id": 17,
    "name": "Зразы с начинкой из шампиньонов",
-   "price": 515,
+   "price": 545,
    "unit": "kg",
    "cat": "semi",
    "desc": "мясные зразы с сочной грибной начинкой внутри",
    "photo": null,
    "queue_name": "Зразы с начинкой из шампиньонов",
-   "hidden": false
+   "hidden": false,
+   "handmade": true
   },
   {
    "id": 18,
@@ -197,7 +212,8 @@
    "desc": "рубленые голубцы без возни с капустными листами",
    "photo": "img/18.jpg",
    "queue_name": "Голубцы ленивые (свинина, говядина)",
-   "hidden": false
+   "hidden": false,
+   "handmade": true
   },
   {
    "id": 19,
@@ -208,7 +224,8 @@
    "desc": "классические голубцы, завёрнутые в капустный лист",
    "photo": "img/19.jpg",
    "queue_name": "Голубцы в листе (свинина, говядина)",
-   "hidden": false
+   "hidden": false,
+   "handmade": true
   },
   {
    "id": 20,
@@ -219,7 +236,8 @@
    "desc": "тонкие блины с начинкой из ветчины и плавленого сыра",
    "photo": "img/20.jpg",
    "queue_name": "Блины ветчина сыр",
-   "hidden": false
+   "hidden": false,
+   "handmade": true
   },
   {
    "id": 21,
@@ -230,7 +248,8 @@
    "desc": "тонкие блины с начинкой из свинины, готовы за пару минут",
    "photo": "img/21.jpg",
    "queue_name": "Блины с мясом (свинина)",
-   "hidden": false
+   "hidden": false,
+   "handmade": true
   },
   {
    "id": 22,
@@ -241,7 +260,8 @@
    "desc": "блины с нежной творожной начинкой — классика на завтрак",
    "photo": "img/22.jpg",
    "queue_name": "Блины творог",
-   "hidden": false
+   "hidden": false,
+   "handmade": true
   },
   {
    "id": 23,
@@ -340,7 +360,8 @@
    "desc": "",
    "photo": null,
    "queue_name": "Пельмени «Татарские»",
-   "hidden": false
+   "hidden": false,
+   "handmade": true
   },
   {
    "id": 32,
@@ -373,7 +394,8 @@
    "desc": "",
    "photo": null,
    "queue_name": "Вареники с творогом и сыром",
-   "hidden": false
+   "hidden": false,
+   "handmade": true
   },
   {
    "id": 35,
@@ -384,7 +406,8 @@
    "desc": "",
    "photo": null,
    "queue_name": "Вареники с картофелем и грибами",
-   "hidden": false
+   "hidden": false,
+   "handmade": true
   },
   {
    "id": 36,
@@ -417,7 +440,8 @@
    "desc": "",
    "photo": null,
    "queue_name": "Котлеты домашние",
-   "hidden": false
+   "hidden": false,
+   "handmade": true
   },
   {
    "id": 39,
@@ -428,7 +452,8 @@
    "desc": "",
    "photo": null,
    "queue_name": "Котлеты из индейки",
-   "hidden": false
+   "hidden": false,
+   "handmade": true
   },
   {
    "id": 40,
@@ -516,7 +541,8 @@
    "desc": "",
    "photo": null,
    "queue_name": "Люля-кебаб",
-   "hidden": false
+   "hidden": false,
+   "handmade": true
   },
   {
    "id": 48,
@@ -1495,7 +1521,8 @@
    "desc": "",
    "photo": null,
    "queue_name": "Антрекот",
-   "hidden": false
+   "hidden": false,
+   "handmade": true
   },
   {
    "id": 137,
