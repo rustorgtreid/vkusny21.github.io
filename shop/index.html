@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Вкусный — заказ полуфабрикатов</title>
-<meta name="description" content="Домашние полуфабрикаты ручной лепки с доставкой по Новочебоксарску и Новому городу">
+<meta name="description" content="Домашние полуфабрикаты, мясо, колбасы и сыры с доставкой по Новочебоксарску и Новому городу">
 <!-- Скрипт Телеграма для режима «мини-приложение» (кнопка меню бота). Вне Телеграма ничего не делает. -->
 <script src="https://telegram.org/js/telegram-web-app.js" async></script>
 <style>
@@ -29,9 +29,11 @@ header p{margin:4px 0 0;font-size:14px;opacity:.9}
 .item{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden;display:flex;flex-direction:column}
 /* Блок под фото всегда 4:3 и одного размера; фото заполняет его целиком (лишнее обрезается по краям),
    поэтому вытянутые и широкие снимки выглядят одинаково. */
-.ph{position:relative;aspect-ratio:4/3;overflow:hidden;background:var(--soft);color:#a99a7a;font-size:13px}
+/* Тёмно-серый — как фон на фото товаров (образец создателя от 22.10.2026), чтобы заглушка не выбивалась из ряда. */
+.ph{position:relative;aspect-ratio:4/3;overflow:hidden;background:#3c3c3c;color:#bdbdbd;font-size:13px}
 .ph img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
-.ph span{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:6px}
+.ph span{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:6px;gap:2px}
+.ph span b{font-size:30px;font-weight:400;line-height:1}
 .body{padding:10px 10px 12px;display:flex;flex-direction:column;gap:6px;flex:1}
 .name{font-weight:600;font-size:15px;line-height:1.25}
 .desc{font-size:13px;color:var(--muted);line-height:1.3}
@@ -52,6 +54,7 @@ header p{margin:4px 0 0;font-size:14px;opacity:.9}
 .go[disabled]{background:#b9b3a6;opacity:1;cursor:not-allowed;font-weight:600}
 .bar.pulse .go{animation:pulse .6s ease-out}
 @keyframes pulse{0%{transform:scale(1)}40%{transform:scale(1.07)}100%{transform:scale(1)}}
+.toast{position:fixed;left:16px;right:16px;bottom:100px;max-width:420px;margin:0 auto;background:#2B2B2B;color:#fff;border-radius:12px;padding:12px 14px;font-size:14px;text-align:center;z-index:20}
 .sheet{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;z-index:10}
 .sheet.open{display:block}
 .panel{position:absolute;left:0;right:0;bottom:0;max-height:92vh;overflow:auto;background:var(--bg);border-radius:18px 18px 0 0;padding:16px;max-width:760px;margin:0 auto}
@@ -77,20 +80,25 @@ header p{margin:4px 0 0;font-size:14px;opacity:.9}
 <body>
 <header><div class="wrap">
   <h1>Вкусный</h1>
-  <p>Домашние полуфабрикаты ручной лепки · Новочебоксарск и Новый город</p>
+  <p>Полуфабрикаты, мясо и птица, колбасы, сыры · Новочебоксарск и Новый город</p>
 </div></header>
 
 <main class="wrap">
-  <div class="note">Цена за 1 кг, можно взять любой вес (шаг 0,5 кг). Минимальный заказ 500 ₽. Доставка 50 ₽, от 1000 ₽ — бесплатно. Оплата при получении.</div>
+  <div class="note">Цена указана за килограмм или за штуку — смотрите рядом с ценой. Весовые товары можно брать любым весом (шаг 0,5 кг). Минимальный заказ 500 ₽. Доставка 50 ₽, от 1000 ₽ — бесплатно. Оплата при получении.</div>
   <div class="tools">
     <button class="tab" data-cat="all" aria-pressed="true">Все</button>
     <button class="tab" data-cat="semi" aria-pressed="false">Полуфабрикаты</button>
     <button class="tab" data-cat="ready" aria-pressed="false">Готовая продукция</button>
+    <button class="tab" data-cat="meat" aria-pressed="false">Мясо и птица</button>
+    <button class="tab" data-cat="deli" aria-pressed="false">Колбасы и деликатесы</button>
+    <button class="tab" data-cat="cheese" aria-pressed="false">Сыры</button>
     <input class="search" type="search" placeholder="Найти товар" aria-label="Поиск по товарам">
   </div>
   <div class="grid" id="grid"></div>
-  <div class="empty" id="empty" hidden>Ничего не найдено</div>
+  <div class="empty" id="empty">Загружаем товары…</div>
 </main>
+
+<div class="toast" id="toast" hidden></div>
 
 <div class="bar" id="bar"><div class="barin">
   <div><b id="barTotal">0 ₽</b><small id="barInfo">Корзина пуста</small></div>
@@ -115,59 +123,74 @@ header p{margin:4px 0 0;font-size:14px;opacity:.9}
   </div>
 </div>
 
-<script type="application/json" id="catalog">{"updated": "2026-10-05", "items": [{"id": 1, "name": "Пельмени домашние (свинина, говядина)", "price": 456, "cat": "semi", "desc": "Ручная лепка, говядина и свинина. Тесто тонкое.", "photo": "img/1.jpg", "queue_name": "Пельмени домашние (свинина, говядина)"}, {"id": 2, "name": "Пельмени из индейки", "price": 466, "cat": "semi", "desc": "диетичнее классических — из нежного мяса индейки", "photo": "img/2.jpg", "queue_name": "Пельмени из индейки"}, {"id": 3, "name": "Пельмени из трески", "price": 445, "cat": "semi", "desc": "из белой рыбы, лёгкий и полезный вариант пельменей", "photo": null, "queue_name": "Пельмени из трески"}, {"id": 4, "name": "Манты свиные", "price": 420, "cat": "semi", "desc": "сочные манты на пару из свинины, ручная лепка", "photo": "img/4.jpg", "queue_name": "Манты свиные"}, {"id": 5, "name": "Хинкали (свинина, говядина, укроп)", "price": 479, "cat": "semi", "desc": "грузинская классика — наваристый бульон внутри, с укропом", "photo": "img/5.jpg", "queue_name": "Хинкали (свинина, говядина, укроп)"}, {"id": 6, "name": "Фрикадельки нежные (свинина, курица)", "price": 530, "cat": "semi", "desc": "маленькие сочные шарики из смешанного фарша — для супа или гарнира", "photo": "img/6.jpg", "queue_name": "Фрикадельки нежные (свинина, курица)"}, {"id": 7, "name": "Бифштекс домашний (свинина, говядина)", "price": 525, "cat": "semi", "desc": "сочная мясная котлета без хлеба и лишнего фарша-наполнителя", "photo": "img/7.jpg", "queue_name": "Бифштекс домашний (свинина, говядина)"}, {"id": 8, "name": "Котлеты нежные (свинина, курица, панир, сухари)", "price": 495, "cat": "semi", "desc": "мягкие котлеты из смешанного фарша в хрустящей панировке", "photo": "img/8.jpg", "queue_name": "Котлеты нежные (свинина, курица, панир, сухари)"}, {"id": 9, "name": "Котлеты детские", "price": 514, "cat": "semi", "desc": "котлеты из курицы и индейки в форме небольших рифлёных «печений»", "photo": "img/9.jpg", "queue_name": "Котлеты детские (курица, индейка)"}, {"id": 10, "name": "Вареники вишня", "price": 468, "cat": "semi", "desc": "сладкие, с сочной вишней — идеальны с сахаром и сметаной", "photo": "img/10.jpg", "queue_name": "Вареники вишня"}, {"id": 11, "name": "Вареники картофель лук", "price": 318, "cat": "semi", "desc": "простая домашняя классика: картошка с обжаренным луком", "photo": "img/11.jpg", "queue_name": "Вареники картофель лук"}, {"id": 12, "name": "Вареники с квашеной капустой", "price": 370, "cat": "semi", "desc": "кисло-острая начинка, любимая многими с детства", "photo": "img/12.jpg", "queue_name": "Вареники с квашеной капустой"}, {"id": 13, "name": "Вареники творог зелёный лук", "price": 435, "cat": "semi", "desc": "солёный вариант творожных вареников, с зелёным луком", "photo": "img/13.jpg", "queue_name": "Вареники творог зелёный лук"}, {"id": 14, "name": "Вареники творог сладкий", "price": 417, "cat": "semi", "desc": "сладкая творожная начинка — отлично с вареньем", "photo": "img/14.jpg", "queue_name": "Вареники творог сладкий"}, {"id": 15, "name": "Вареники яйцо зелёный лук", "price": 393, "cat": "semi", "desc": "простая и любимая начинка на скорую руку", "photo": "img/15.jpg", "queue_name": "Вареники яйцо зелёный лук"}, {"id": 16, "name": "Сырники из натур. творога", "price": 469, "cat": "semi", "desc": "нежные, из натурального творога, без лишних добавок", "photo": "img/16.jpg", "queue_name": "Сырники из натур. творога"}, {"id": 17, "name": "Зразы с начинкой из шампиньонов", "price": 515, "cat": "semi", "desc": "мясные зразы с сочной грибной начинкой внутри", "photo": null, "queue_name": "Зразы с начинкой из шампиньонов"}, {"id": 18, "name": "Голубцы ленивые (свинина, говядина)", "price": 480, "cat": "semi", "desc": "рубленые голубцы без возни с капустными листами", "photo": "img/18.jpg", "queue_name": "Голубцы ленивые (свинина, говядина)"}, {"id": 19, "name": "Голубцы в листе (свинина, говядина)", "price": 499, "cat": "semi", "desc": "классические голубцы, завёрнутые в капустный лист", "photo": "img/19.jpg", "queue_name": "Голубцы в листе (свинина, говядина)"}, {"id": 20, "name": "Блины ветчина сыр", "price": 498, "cat": "ready", "desc": "тонкие блины с начинкой из ветчины и плавленого сыра", "photo": "img/20.jpg", "queue_name": "Блины ветчина сыр"}, {"id": 21, "name": "Блины с мясом (свинина)", "price": 518, "cat": "ready", "desc": "тонкие блины с начинкой из свинины, готовы за пару минут", "photo": "img/21.jpg", "queue_name": "Блины с мясом (свинина)"}, {"id": 22, "name": "Блины творог", "price": 463, "cat": "ready", "desc": "блины с нежной творожной начинкой — классика на завтрак", "photo": "img/22.jpg", "queue_name": "Блины творог"}, {"id": 23, "name": "Блины курица грибы", "price": 440, "cat": "ready", "desc": "сытная начинка из курицы с грибами в тонком блине", "photo": null, "queue_name": "Блины курица грибы"}, {"id": 24, "name": "Филе грудки в золотистой панировке", "price": 585, "cat": "ready", "desc": "куриное филе в хрустящей панировке — просто разогреть", "photo": "img/24.jpg", "queue_name": "Филе грудки в золотистой панировке"}, {"id": 25, "name": "Котлеты Кордон Блю (ветчина и сыр)", "price": 570, "cat": "ready", "desc": "куриная котлета с начинкой из ветчины и плавленого сыра", "photo": "img/25.jpg", "queue_name": "Котлеты Кордон Блю (ветчина и сыр)"}, {"id": 26, "name": "Котлеты с маслом", "price": 638, "cat": "ready", "desc": "сочные котлеты по-киевски, с маслом внутри", "photo": null, "queue_name": "Котлеты с маслом"}, {"id": 27, "name": "Котлеты с грибами", "price": 553, "cat": "ready", "desc": "куриные котлеты с грибной начинкой", "photo": "img/27.jpg", "queue_name": "Котлеты с грибами"}, {"id": 28, "name": "Котлеты вкусные", "price": 289, "cat": "ready", "desc": "простые сочные котлеты на каждый день", "photo": null, "queue_name": "Котлеты вкусные"}, {"id": 29, "name": "Рамштекс сочный", "price": 356, "cat": "ready", "desc": "отбивная в панировке, готова за считанные минуты", "photo": null, "queue_name": "Рамштекс сочный"}, {"id": 30, "name": "Шницель куриный", "price": 315, "cat": "ready", "desc": "сочная мягкая котлета из куриного фарша, уже готовая — пара минут в микроволновке, на сковородке или в духовке", "photo": "img/30.jpg", "queue_name": "Шницель куриный"}]}</script>
 <script>
 (function(){
   "use strict";
   var CFG = {vk:"club241123223", tg:"Vkusno_Market_bot", max:"se14512617_bot"};
-  var MIN_ORDER = 500, FREE_FROM = 1000, DELIVERY = 50, MAX_UNITS = 20; // единица = 0,5 кг
-  var items = JSON.parse(document.getElementById("catalog").textContent).items;
-  var byId = {}; items.forEach(function(i){ byId[i.id] = i; });
-  var cart = {};          // id -> единиц по 0,5 кг
+  var MIN_ORDER = 500, FREE_FROM = 1000, DELIVERY = 50, MAX_UNITS = 20; // единица: 0,5 кг для весовых, 1 шт для штучных
+  var MAX_ITEMS = 20;      // разных позиций в корзине: 1 + 3*20 = 61 символ кода, в предел 64 влезает
+  var ICON = {semi:"🥟", ready:"🍽", meat:"🍗", deli:"🥓", cheese:"🧀"};
+  var items = [], byId = {}, loaded = false;   // товары приходят из catalog.json — см. конец скрипта
+  var cart = {};          // id -> единиц (весовой: по 0,5 кг; штучный: штук)
   var cat = "all", q = "";
 
-  try { var saved = JSON.parse(localStorage.getItem("vk_cart") || "{}"); Object.keys(saved).forEach(function(k){ if (byId[k] && saved[k] > 0) cart[k] = Math.min(MAX_UNITS, saved[k] | 0); }); } catch(e){}
+  function restoreCart(){
+    try { var saved = JSON.parse(localStorage.getItem("vk_cart") || "{}"); Object.keys(saved).forEach(function(k){ if (byId[k] && saved[k] > 0 && Object.keys(cart).length < MAX_ITEMS) cart[k] = Math.min(MAX_UNITS, saved[k] | 0); }); } catch(e){}
+  }
   function persist(){ try { localStorage.setItem("vk_cart", JSON.stringify(cart)); } catch(e){} }
 
-  function kg(u){ return String(u * 0.5).replace(".", ",") + " кг"; }
+  function isKg(it){ return it.unit !== "pc"; }
+  function qty(id, u){ return isKg(byId[id]) ? String(u * 0.5).replace(".", ",") + " кг" : u + " шт"; }
   function rub(n){ return Math.round(n).toLocaleString("ru-RU") + " ₽"; }
-  function lineSum(id){ return byId[id].price * cart[id] * 0.5; }
+  function per(it){ return isKg(it) ? "кг" : "шт"; }
+  function lineSum(id){ return byId[id].price * cart[id] * (isKg(byId[id]) ? 0.5 : 1); }
   function subtotal(){ return Object.keys(cart).reduce(function(s,id){ return s + lineSum(id); }, 0); }
   function delivery(s){ return s >= FREE_FROM ? 0 : DELIVERY; }
 
-  // Код корзины: "c" + пары [номер товара][число единиц], оба в системе по основанию 36 (1 символ = 0..35).
-  // Влезает в 64 символа даже при всех 30 позициях — это предел параметра в ссылках Телеграма и ВК.
+  // Код корзины, формат «d»: "d" + тройки [номер товара — 2 символа][число единиц — 1 символ], всё в системе по основанию 36.
+  // Номера товаров 0..1295, количество 0..35. 20 позиций = 61 символ (предел параметра в ссылках Телеграма и ВК — 64).
+  // Прежний формат «c» (номер в 1 символ) страница больше не создаёт, но бот должен продолжать его читать.
+  function pad2(s){ return ("0" + s).slice(-2); }
   function code(){
     var ids = Object.keys(cart).map(Number).sort(function(a,b){ return a-b; });
-    return "c" + ids.map(function(id){ return id.toString(36) + cart[id].toString(36); }).join("");
+    return "d" + ids.map(function(id){ return pad2(id.toString(36)) + cart[id].toString(36); }).join("");
   }
   function orderText(){
     var s = subtotal(), d = delivery(s), lines = Object.keys(cart).map(Number).sort(function(a,b){return a-b;}).map(function(id){
-      return "• " + byId[id].name + " — " + kg(cart[id]) + " = " + rub(lineSum(id));
+      return "• " + byId[id].name + " — " + qty(id, cart[id]) + " = " + rub(lineSum(id));
     });
     return "Заказ из витрины «Вкусный»:\n" + lines.join("\n") + "\nТовары: " + rub(s) + "\nДоставка: " + (d ? rub(d) : "бесплатно") + "\nИтого: " + rub(s + d) + "\nКод заказа: " + code();
   }
 
+  var toastEl = document.getElementById("toast"), toastTimer = 0;
+  function toast(t){ toastEl.textContent = t; toastEl.hidden = false; clearTimeout(toastTimer); toastTimer = setTimeout(function(){ toastEl.hidden = true; }, 3500); }
+
   function setQty(id, u){
-    if (u <= 0) delete cart[id]; else cart[id] = Math.min(MAX_UNITS, u);
+    if (u <= 0) delete cart[id];
+    else {
+      if (!cart[id] && Object.keys(cart).length >= MAX_ITEMS) { toast("В одном заказе можно не больше " + MAX_ITEMS + " разных товаров. Оформите этот заказ, остальное закажите вторым."); return; }
+      cart[id] = Math.min(MAX_UNITS, u);
+    }
     persist(); renderGrid(); renderBar(); if (sheet.classList.contains("open")) renderCart();
   }
 
   var grid = document.getElementById("grid"), emptyEl = document.getElementById("empty");
   function renderGrid(){
+    if (!loaded) return;
     grid.textContent = "";
     var shown = items.filter(function(i){
       return (cat === "all" || i.cat === cat) && (!q || i.name.toLowerCase().indexOf(q) >= 0);
     });
     emptyEl.hidden = shown.length > 0;
+    emptyEl.textContent = "Ничего не найдено";
     shown.forEach(function(i){
       var el = document.createElement("div"); el.className = "item";
       var ph = document.createElement("div"); ph.className = "ph";
       if (i.photo) { var im = document.createElement("img"); im.src = i.photo; im.alt = i.name; im.loading = "lazy"; ph.appendChild(im); }
-      else { var ns = document.createElement("span"); ns.textContent = "Фото скоро"; ph.appendChild(ns); }
+      else { var ns = document.createElement("span"); ns.innerHTML = "<b></b>Фото скоро"; ns.firstChild.textContent = ICON[i.cat] || ""; ph.appendChild(ns); }
       var b = document.createElement("div"); b.className = "body";
       var n = document.createElement("div"); n.className = "name"; n.textContent = i.name;
-      var p = document.createElement("div"); p.className = "price"; p.innerHTML = rub(i.price) + " <small>/ кг</small>";
+      var p = document.createElement("div"); p.className = "price"; p.innerHTML = rub(i.price) + " <small>/ " + per(i) + "</small>";
       b.appendChild(n);
       if (i.desc) { var d = document.createElement("div"); d.className = "desc"; d.textContent = i.desc; b.appendChild(d); }
       b.appendChild(p);
@@ -175,11 +198,11 @@ header p{margin:4px 0 0;font-size:14px;opacity:.9}
       var u = cart[i.id] || 0;
       if (!u) {
         var a = document.createElement("button"); a.className = "add"; a.type = "button"; a.textContent = "В корзину";
-        a.onclick = function(){ setQty(i.id, 2); }; buy.appendChild(a);   // по умолчанию 1 кг
+        a.onclick = function(){ setQty(i.id, isKg(i) ? 2 : 1); }; buy.appendChild(a);   // по умолчанию 1 кг или 1 шт
       } else {
         var st = document.createElement("div"); st.className = "step";
         var m = document.createElement("button"); m.type = "button"; m.textContent = "−"; m.setAttribute("aria-label", "Меньше"); m.onclick = function(){ setQty(i.id, u - 1); };
-        var s = document.createElement("span"); s.textContent = kg(u);
+        var s = document.createElement("span"); s.textContent = qty(i.id, u);
         var pl = document.createElement("button"); pl.type = "button"; pl.textContent = "+"; pl.setAttribute("aria-label", "Больше"); pl.onclick = function(){ setQty(i.id, u + 1); };
         st.appendChild(m); st.appendChild(s); st.appendChild(pl); buy.appendChild(st);
       }
@@ -206,11 +229,11 @@ header p{margin:4px 0 0;font-size:14px;opacity:.9}
       var row = document.createElement("div"); row.className = "line";
       var t = document.createElement("div"); t.className = "t";
       var a = document.createElement("div"); a.textContent = byId[id].name;
-      var b = document.createElement("div"); b.textContent = rub(byId[id].price) + " / кг · " + rub(lineSum(id));
+      var b = document.createElement("div"); b.textContent = rub(byId[id].price) + " / " + per(byId[id]) + " · " + rub(lineSum(id));
       t.appendChild(a); t.appendChild(b);
       var st = document.createElement("div"); st.className = "step";
       var m = document.createElement("button"); m.type = "button"; m.textContent = "−"; m.onclick = function(){ setQty(id, cart[id] - 1); };
-      var s = document.createElement("span"); s.textContent = kg(cart[id]);
+      var s = document.createElement("span"); s.textContent = qty(id, cart[id]);
       var pl = document.createElement("button"); pl.type = "button"; pl.textContent = "+"; pl.onclick = function(){ setQty(id, cart[id] + 1); };
       st.appendChild(m); st.appendChild(s); st.appendChild(pl);
       row.appendChild(t); row.appendChild(st); linesEl.appendChild(row);
@@ -268,8 +291,24 @@ header p{margin:4px 0 0;font-size:14px;opacity:.9}
     hintEl.textContent = "Заказ скопирован. Если в чате ВКонтакте корзина не появилась сама — вставьте скопированный текст в поле сообщения и отправьте.";
   });
 
-  window.__vitrina = {code: code, items: items};   // для проверки в консоли
-  renderGrid(); renderBar();
+  // Товары — в catalog.json рядом со страницей; тот же файл читает бот. Правила каталога — в test_shop.py.
+  // "no-cache" — браузер не берёт каталог из своего 10-минутного кэша, а каждый раз сверяется с GitHub.
+  // Как быстро сам GitHub после выкладки отдаёт новый файл — не проверено (проверить на первой выкладке).
+  renderBar();
+  fetch("catalog.json", {cache: "no-cache"})
+    .then(function(r){ if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+    .then(function(data){
+      items = data.items.filter(function(i){ return !i.hidden; });
+      items.forEach(function(i){ byId[i.id] = i; });
+      loaded = true;
+      restoreCart(); renderGrid(); renderBar();
+      window.__vitrina = {code: code, items: items, setQty: setQty, orderText: orderText, subtotal: subtotal, cart: function(){ return cart; }, MAX_ITEMS: MAX_ITEMS};   // для проверки в консоли и тестов
+    })
+    .catch(function(){
+      emptyEl.hidden = false;
+      emptyEl.textContent = "Не удалось загрузить список товаров. Проверьте интернет и обновите страницу.";
+      window.__vitrina = {failed: true};
+    });
 })();
 </script>
 </body>
